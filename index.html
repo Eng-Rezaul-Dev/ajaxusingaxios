@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/milligram.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <a href="create.html" class="button button-outline float-left">Creat new item</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product name</th>
+                        <th>Product code</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total price</th>
+                        <th>Delete</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody id="itemList">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+
+    <script src="./js/axios.min.js"></script>
+
+    <script>
+        async function getList(){
+            let URL = "https://crud.teamrabbil.com/api/v1/readProduct";
+            let res = await axios.get(URL);
+            let listData = res.data['data'];
+
+            listData.forEach((item) => {
+                document.getElementById('itemList').innerHTML +=(`<tr>
+                    <td>${item['ProductName']}</td>
+                    <td>${item['ProductCode']}</td>
+                    <td>$ {item['UnitPrice']}</td>
+                    <td>${item['Qty']}</td>
+                    <td>${item['TotalPrice']}</td>
+                    <td><button onclick="deleteItem('${item['_id']}')">Delete</button></td>
+                    <td><button onclick="UpdateItem('${item['_id']}')">Update</button></td>
+                </tr>`)
+            });
+        }
+        getList();
+        
+
+        async function deleteItem(id){
+            let URL = `https://crud.teamrabbil.com/api/v1/DeleteProduct/${id}`;
+            let res = await axios.get(URL);
+        
+
+            //document.getElementById('itemList').innerHTML="";
+            await getList();
+            window.location.reload();
+        }
+
+        async function UpdateItem(id){
+            window.location = `update.html?id=${id}`
+        }
+    </script>
+</body>
+</html>
